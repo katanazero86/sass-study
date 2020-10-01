@@ -93,3 +93,71 @@ p
   font-size: 12px
   color: $pink
 ```
+
+---
+
+## 윈도우에서 SASS 설치하기
+- Mac OS X 와 달리 윈도우에는 루비가 설치되어 있지 않다. SASS 공식 웹 사이트에서 윈도우용 루비인스톨러(Ruby-Installer) 설치를 권장한다. (현재 루비 SASS 는 2019.03.26일자로 지원이 중단 되었다. -> 자세한 내용은 https://sass-lang.com/ 참조)
+
+## SASS 에게 감시할 watch 파일 알려주기
+- SASS 에게 어떤 파일을 감시하라고 알려주면, 우리가 스타일시트를 편집하는 동안 SASS 는 해당 파일을 모니터닝한다. 우리가 코드를 변경할 때마다 SASS 는 SASS 문법이 잘 작성되어 있는 .scss 파일을 웹 브라우저에서 해석될 준비가 된 .css 파일로 변환해준다.
+> sass --watch test.scss:test.css
+> 위 명령어를 실행하면 SASS 는 test.scss 파일에 변화가 있는지 감시하며, 해당 파일에 변화가 감지되면 test.css 로 변환하고 기존 내용을 변경된 내용으로 최신화 시킨다.(덮어버린다)
+- SASS 에게 디렉터리를 통째로 감시하라고도 명령어를 작성할 수 있다.
+> sass --watch <input folder>:<output folder>
+> sass --watch scss:css
+> 위 명령어를 실행하면 SASS 는 scss 폴더 전체를 감시하며, 폴더내에서 파일에 변화가 감지되면 .css 로 변환한 결과물을 css 폴더에 반영한다.
+  
+## 명령어 대신 애플리케이션 사용하기
+- 명령어를 사용하기도 하지만, 애플리케이션을 사용하여 SASS 파일을 쉽게 모니터링하고 출력 파일을 관리할 수 있다.
+- 스카우트(https://scout-app.io/)
+- 라이브리로드(http://livereload.com/)
+
+---
+
+## SASS 사용하기
+
+- SASS test 사이트 : https://www.sassmeister.com/
+1. 중첩규칙(nesting)
+> SASS 를 이용하면 선택자를 다른 선언문에서 계속 반복해서 쓰지 않고 선언문 안에 중첩해서 작성이 가능하다. 중첩하는 것도 마크업의 구조를 그대로 반영한다.
+```
+.logo {
+  display : flex;
+  
+  img {
+    width : 100%;
+  }
+}
+
+// compile CSS
+.logo {
+  display : flex;
+}
+
+.logo img {
+  width : 100%;
+}
+```
+> SASS 는 선택자에서 각 요소를 반복하지 않고 계층 구조를 나타내는 중첩방식으로 코드를 간단하게 만든다. 선택자를 정황하게 늘여놓은 필요가 없다.
+
+2. 네임스페이스 속성 중첩
+> 중첩 규직을 추가하는 것과 마찬가지로 SASS 에서는 공통된 네임 스페이스 속성도 중첩이 가능하다.
+```
+.header {
+  font : {
+    size : 54px;
+    weight : bold;
+  }
+}
+
+.body {
+  background : {
+    color : black;
+    position : top left;
+    size : 16px 16px;
+    image : url();
+    // ...
+  }
+}
+```
+> 이와 비슷하게 ```text- / background-``` 네임 스페이스 속성도 있다. 
