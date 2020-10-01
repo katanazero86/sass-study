@@ -161,3 +161,45 @@ p
 }
 ```
 > 이와 비슷하게 ```text- / background-``` 네임 스페이스 속성도 있다. 
+
+3. & 로 부모 선택자 참조하기
+> SASS 는 특수기호 **&** 로 부모선택자를 참조할 수 있다.
+```
+a {
+  color : red;
+  
+  &:hover {
+    color : blue;
+  }
+}
+
+// CSS
+
+a {
+  color : red;
+}
+
+a:hover {
+  color : blue;
+}
+```
+> & 선택자가 위 코드에서는 a 태그 선택자를 가리킨다.
+> 아래는 다른예시다. 스타일을 덮어쓰기할 때 유용하다.
+```
+li a {
+  color : blue;
+  
+  &.success {
+    color : green
+  }
+}
+
+.list {
+  
+  font-weight : normal;
+
+  &__bold {
+    font-weight : bold
+  }
+}
+```
