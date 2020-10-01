@@ -228,3 +228,80 @@ body {
 }
 ```
 > SASS 변수를 사용함으로써 CSS 문서에서 반복되는 값을 일일이 고치는 엄청난 작업을 단 몇 초 안에 해결할 수 있게 되었다.
+
+6. darken / lighten 컬러 기능을 이용하여 다른 음영 컬러 만들기
+> **darken / lighten** 기능을 이용하여 다른 음영 컬러를 만들 수 있다.
+```
+$primaryColor : #007bff;
+$primaryColorDark30 : darken($primaryColor, 30%);
+$primaryColorLight30 : lighten($primaryColor, 30%);
+
+.test {
+  color : $primaryColorDark30;
+  font-weight : bold;
+  font-size : 20px;
+}
+
+.test2 {
+  color : $primaryColorLight30;
+  font-weight : bold;
+  font-size : 20px;
+}
+
+<div class='test'>
+    123456
+</div>
+
+<div class='test2'>
+    123456
+</div>
+```
+
+7. 믹스인(mixin)
+> 믹스인은 스타일 블록을 정의하고 재사용하게 해준다. 여러 가지 선언에서 똑같은 규칙을 사용하여 단 한 번만 스타일 그룹을 정의하고 필요할 때마다 그것을 참조 할 수 있다. **@mixin** 지시자를 이용하여 정의한다. 인자를 전달도 가능하며, 기본값도 정의가 가능하다.
+```
+@mixin scroll {
+  overflow : auto;
+}
+
+@mixin titleStyle {
+  margin : 0 0 20px 0;
+  font-size : 20px;
+  font-weight : bold;
+}
+
+@mixin colorStyle($color : #eee) {
+  color : $color
+}
+
+@mixin borderRounded($radius : 4px) {
+  -webkit-border-radius : $radius;
+  -moz-border-radius : $radius;
+  border-radius : $radius;
+}
+
+.title h2 {
+  @include titleStyle;
+  @include scroll;
+  @include color(#868686);
+  @include borderRounded(8px);
+}
+```
+> 믹스인을 라이브리러리 형식으로 작성하여 사용도 가능하다.
+```
+// mixins.scss
+@mixin colorStyle($color : #eee) {
+  color : $color
+}
+
+@mixin borderRounded($radius : 4px) {
+  -webkit-border-radius : $radius;
+  -moz-border-radius : $radius;
+  border-radius : $radius;
+}
+
+// page.scss
+@import './mixins.scss';
+```
+> @import 명령어로 mxins.scss 를 불러와서, @include 구문으로 호출해서 사용이 가능하다.
+> SASS 에서 컴파일할 때, @import 명령어로 불러온 SCSS 파일들은 CSS 파일 하나로 합쳐진다.(HTTP 요청 횟수를 줄이며, 웹 사이트 성능에 유리하다.)
