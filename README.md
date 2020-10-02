@@ -503,22 +503,22 @@ section.main {
 }
 
 @mixin render-col($type) {
-	@for $i from 1 to 13 {
-		.col#{$type}-#{$i} {
+  @for $i from 1 to 13 {
+    .col#{$type}-#{$i} {
       flex-grow : 0;
       flex-shrink : 0;
       flex-basis : get-size($i);
-			max-width: get-size($i);
-		}
-	}
+      max-width: get-size($i);
+    }
+  }
 }
 
 @include responsive(desktop) {
-	@include render-columns('-lg'); // desktop
+  @include render-columns('-lg'); // desktop
 }
 
 @include responsive(mobile) {
-	@include render-columns('-xs'); // mobile
+  @include render-columns('-xs'); // mobile
 }
 
 .d-flex-row {
@@ -555,3 +555,4 @@ section.main {
 }
 ```
 > 위와 같이 사용하면, flex 속성을 활용하여 12 column grid layout 을 쉽게 클래스들을 생성하여 사용이 가능하다.(.col-xs-1 / .col-lg-12)
+> 반응형을 담당하는 믹스인을 호출하여 내부에서 다른 믹스인을 호출한다.(중첩 믹스인) 믹스인에 클래스명에 생성될 column 문자열을 전달한 후, **@for** 문을 활용하여 생성해준다. 
