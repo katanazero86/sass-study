@@ -514,11 +514,11 @@ section.main {
 }
 
 @include responsive(desktop) {
-  @include render-columns('-lg'); // desktop
+  @include render-col('-lg'); // desktop
 }
 
 @include responsive(mobile) {
-  @include render-columns('-xs'); // mobile
+  @include render-col('-xs'); // mobile
 }
 
 .d-flex-row {
