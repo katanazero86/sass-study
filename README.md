@@ -305,3 +305,253 @@ $primaryColorLight30 : lighten($primaryColor, 30%);
 ```
 > @import 명령어로 mxins.scss 를 불러와서, @include 구문으로 호출해서 사용이 가능하다.
 > SASS 에서 컴파일할 때, @import 명령어로 불러온 SCSS 파일들은 CSS 파일 하나로 합쳐진다.(HTTP 요청 횟수를 줄이며, 웹 사이트 성능에 유리하다.)
+
+8. 상속(extend)
+> 공통 스타일을 정의하여 상속시킬 수 있다. 중복을 최소화해주고 공통 스타일을 정의할 수 있으니 편리하다. **@extend** 지시자를 사용한다.
+```
+.box{
+	padding:20px;
+	border:1px solid #333;
+}
+ 
+.news-box{
+	@extend .box;
+	background-color:#eee;
+}
+ 
+.list-box{
+	@extend .box;
+	background-color:#000;	
+}
+
+// CSS
+.box, .news-box, .list-box { padding: 20px; border: 1px solid #333; }
+.news-box { background-color: #eee; }
+.list-box { background-color: #000; }
+```
+> ```<div class="box news-box"></div>``` 이런 형식으로 추가 클래스를 만드는 작업을 최소화 시킬 수 있다.
+> @extend 로 플레이스홀더 선택자를 사용하면, 오로지 다른 스타일을 확장하려는 목적으로만 사용도 가능하다. **%** 를 클래스 이름 앞에 붙여 플레이스홀더를 표시해준다.
+```
+%button {
+  padding : 10px;
+  font-weight : bold;
+}
+
+.submit {
+  @extend %button;
+  background-color : green;
+}
+```
+
+---
+
+## SASS 와 미디어 쿼리(Media queries)
+- 반응형 프로젝트에서 SASS 를 어떻게 사용하는지 살펴보자.
+
+1. 미디어 쿼리 구문
+```
+<link rel="stylesheet" media="screen and (max-width: 768px)" href="mystyle.css" />
+
+@media screen and (max-width: 768px) { 
+  body { 
+    background-color: lightgreen; 
+  } 
+}
+
+@media (min-width: 1024px) {
+  // CSS
+}
+
+@media (min-width: 375px) and (max-width: 1024px) {
+  // CSS
+}
+
+@media all and (min-width:1024px) {
+  // CSS
+}
+
+max-width : 최대 너비를 설정합니다. 브라우저의 너비가 max-width 값 이하인 경우에만 CSS가 적용
+min-width : 최소 너비를 설정합니다. 브라우저의 너비가 min-width 값 이상일 경우에만 CSS가 적용
+
+미디어 유형 (생략시 default 값은 all)
+all 모든장치
+screen 컴퓨터 화면 또는 스마트 기기 화면
+tv 영상과 음성이 함께 출력되는 장치
+projection 프로젝터 장치
+handler 손에 들고다니는 소형장치
+speech 음성 출력 장치
+aural 음성 합성 장치 (화면을 소리로 출력해주는 장치)
+embossed 점자 인쇄 장치 (화면을 읽어 종이에 점자를 찍어내는 장치)
+tty 디스플레이 기능이 제한된 장치
+braille 점자 표시 장치
+width 웹페이지 가로 너비
+height 웹페이지 세로 높이
+device-width 기기의 가로 너비
+device-height 기기의 세로 높이
+orientation 기기의 화면방향 (portrait:세로,landscape:가로)
+aspect-ratio 화면 비율
+device-aspect-ratio 단말기기의 화면 비율
+color 기기의 비트 수
+color-index 기기의 색상 수
+monochrome 기기가 흑백일 때 픽셀당 비트 수
+resoulution 기기의 해상력
+scan TV의 스캔 방식
+grid 기기의 그리드/비트맵
+
+```
+
+2. 미디어 쿼리 중첩하기
+> SASS 에서는 원래의 선언 안에 미디어 쿼리를 중첩할 수 있습니다.
+```
+section.main {
+  width : 50%;
+  font-size : 16px;
+  
+  @media (max-width: 700px) {
+    width : 100%;
+    font-size : 12px;
+  }
+}
+
+// CSS
+section.main {
+  width : 50%;
+  font-size : 16px;
+}
+
+@media (max-width: 700px) {
+  section.main {
+    width : 100%;
+    font-size : 12px;
+  }
+}
+```
+> 중단점(break point)을 SASS 변수로 정의해서 사용한다. 미디어 쿼리를 사용할 때마다 해당 변수값을 참조하게 할 수 있다. 중단점값을 한곳에서 관리하니 매우 편리하다.
+```
+$mobile : 375px;
+$desktop : 1023px;
+
+section.main {
+  width : 50%;
+  font-size : 16px;
+  
+  @media (max-width: $mobile) {
+    width : 100%;
+    font-size : 12px;
+  }
+  
+  @media (min-width: $desktop + 1) {
+   // 심지어 연산도 가능하다!!
+   // CSS
+  }
+  
+}
+```
+
+3. @content 블록과 믹스인 결합시키기
+- SASS 의 **@content** 지시자를 사용하여 스타일 블록 전체를 믹스인으로 넘길 수 있다.
+```
+@mixin responsive($range) {
+	@if $range == desktop {
+		@media (min-width: $desktop) { @content; }
+	} @else if $range == mobild {
+		@media (max-width: $mobile) { @content; }
+	}
+}
+
+.cards { 
+  padding : 10px;
+  &-index {
+		margin-top: 16px;
+	}
+	&-item {
+		padding: 16px;
+	}
+  
+  @include responsive(mobile) {
+		padding: 4px;
+		&-index {
+			margin-top: 8px;
+		}
+		&-item {
+			padding: 0 16px;
+		}
+	}
+  
+}
+```
+> **@content**  지시어는 미디어쿼리에 삽입할 믹스인에 스타일 블록이 넘어오는거다. 반복되는 코드가 줄고 반응형 디자인 작업이 간단해진다.
+
+4. 반응형에 따라 flex column 구현하기(12 columns grid)
+- SASS 를 이용하면, bootstrap / vuetify 에서 이용하는 flex 12 columns grid layout system 을 쉽게 구현 가능하다.
+- Interpolation: **#{}** -> 인터폴레이션은 변수의 값을 문자열 그대로 삽입
+
+```
+@function get-size($column) {
+	@if $column == 1 { @return (100% / 12); }
+	@else if $column == 2 { @return (100% / 12) * 2; }
+	@else if $column == 3 { @return (100% / 12) * 3; }
+	@else if $column == 4 { @return (100% / 12) * 4; }
+	@else if $column == 5 { @return (100% / 12) * 5; }
+	@else if $column == 6 { @return (100% / 12) * 6; }
+	@else if $column == 7 { @return (100% / 12) * 7; }
+	@else if $column == 8 { @return (100% / 12) * 8; }
+	@else if $column == 9 { @return (100% / 12) * 9; }
+	@else if $column == 10 { @return (100% / 12) * 10; }
+	@else if $column == 11 { @return (100% / 12) * 11; }
+	@else if $column == 12 { @return (100% / 12) * 12; }
+}
+
+@mixin render-col($type) {
+	@for $i from 1 to 13 {
+		.col#{$type}-#{$i} {
+      flex-grow : 0;
+      flex-shrink : 0;
+      flex-basis : get-size($i);
+			max-width: get-size($i);
+		}
+	}
+}
+
+@include responsive(desktop) {
+	@include render-columns('-lg'); // desktop
+}
+
+@include responsive(mobile) {
+	@include render-columns('-xs'); // mobile
+}
+
+.d-flex-row {
+  display : flex;
+  flex-direction : row; 
+}
+
+.row {
+  @extend .d-flex-row;
+  flex-wrap : nowrap
+}
+
+.row-wrap {
+  @extend .d-flex-row;
+  flex-wrap : wrap;
+}
+
+.align-items {
+  &-start {
+    align-items: flex-start;
+  }
+
+  &-center {
+    align-items: center;
+  }
+  //...
+}
+
+.col {
+   flex-basis: 0;
+   flex-grow: 1;
+   flex-shrink : 1;
+   max-width: 100%;
+}
+```
+> 위와 같이 사용하면, flex 속성을 활용하여 12 column grid layout 을 쉽게 클래스들을 생성하여 사용이 가능하다.(.col-xs-1 / .col-lg-12)
